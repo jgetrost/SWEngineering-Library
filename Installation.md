@@ -1,5 +1,6 @@
 Configure EC2 for .NET Core 2.0
 ================================
+This document will list the steps necessary to run a .NET Core web application on an Ubuntu 16.04 EC2 instance on AWS.
 
 Installing .NET Core (Ubuntu 16.04)
 ------------------------------------
