@@ -64,3 +64,67 @@ sudo nginx -t
 ```
 sudo nginx -s reload
 ```
+
+Installing your app
+-------------------
+
+1. Edit your project's `.csproj`.
+Add `<PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>` to the `<PropertyGroup>` section of the `.csproj` file.
+
+2. If you are using built in authentication:
+Add: 
+```
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+```
+to your application's `Startup.cs` file before calling `app.UseAuthentication();`.
+
+3. Publish your project.
+
+4. Copy the published output to your EC2 instance.
+
+5. Give ownership of your app files to the www-data user and group.
+```
+sudo chown -R www-data:www-data /app/files/directory
+```
+6. Set up system service for your app.
+```
+sudo nano /etc/systemd/system/kestrel-{application-name}.service
+```
+
+Put this content in the file:
+```
+[Unit]
+Description={application-description}
+
+[Service]
+WorkingDirectory=/app/files/directory
+ExecStart=/usr/bin/dotnet /app/files/directory/{application-name}.dll
+Restart=always
+RestartSec=10  # Restart service after 10 seconds if dotnet service crashes
+SyslogIdentifier=dotnet-{application-name}
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target
+```
+
+7. Enable the service.
+```
+sudo systemctl enable kestrel-{application-name}.service
+```
+
+Manage the service using these commands:
+```
+sudo systemctl start kestrel-hellomvc.service
+
+sudo systemctl status kestrel-hellomvc.service
+
+sudo systemctl restart kestrel-hellomvc.service
+
+sudo systemctl stop kestrel-hellomvc.service
+```
