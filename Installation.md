@@ -72,6 +72,7 @@ Installing your app
 Add `<PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>` to the `<PropertyGroup>` section of the `.csproj` file.
 
 2. If you are using built in authentication:
+
 Add: 
 ```
 app.UseForwardedHeaders(new ForwardedHeadersOptions
