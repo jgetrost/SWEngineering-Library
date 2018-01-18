@@ -4,7 +4,6 @@ This document will list the steps necessary to run a .NET Core web application o
 
 Installing .NET Core (Ubuntu 16.04)
 ------------------------------------
-
 1. Download and register the Microsoft product key.
 ```
 curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
@@ -26,3 +25,42 @@ sudo apt-get install dotnet-sdk-2.1.3
 
 Installing nginx
 ----------------
+1. Install nginx
+```
+sudo apt-get install nginx
+```
+
+2. Start nginx
+```
+sudo service nginx start
+```
+
+3. Edit configuration for reverse proxy to .NET application.
+```
+sudo nano /etc/nginx/sites-available/default
+```
+
+4. Replace `/etc/nginx/sites-available/default` with:
+```
+server {
+    listen 80;
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $http_host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+5. Test the syntax of `/etc/nginx/sites-available/default/`.
+```
+sudo nginx -t
+```
+
+6. Reload nginx configuration.
+```
+sudo nginx -s reload
+```
