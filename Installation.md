@@ -153,7 +153,7 @@ Configure EC2 for MySQL
 
 4. Restart MySQL:
 ```
-    service mysql restart
+    sudo service mysql restart
 ```
 
 5. Login to MySQL using your root account:
