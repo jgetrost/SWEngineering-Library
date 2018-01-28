@@ -116,16 +116,59 @@ WantedBy=multi-user.target
 
 7. Enable the service.
 ```
-sudo systemctl enable kestrel-{application-name}.service
+    sudo systemctl enable kestrel-{application-name}.service
 ```
 
 Manage the service using these commands:
 ```
-sudo systemctl start kestrel-hellomvc.service
+    sudo systemctl start kestrel-hellomvc.service
 
-sudo systemctl status kestrel-hellomvc.service
+    sudo systemctl status kestrel-hellomvc.service
 
-sudo systemctl restart kestrel-hellomvc.service
+    sudo systemctl restart kestrel-hellomvc.service
 
-sudo systemctl stop kestrel-hellomvc.service
+    sudo systemctl stop kestrel-hellomvc.service
+```
+
+
+Configure EC2 for MySQL
+================================
+
+1. Update Package List, Install MySQL, and Follow Guided Install.
+```
+    sudo apt-get update
+    sudo apt-get install mysql-server
+    mysql_secure_installation
+```
+
+2. Edit Configuration:
+```
+    sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+
+3. Change Bind address to 0.0.0.0:
+```
+    bind-address = 0.0.0.0
+```
+
+4. Restart MySQL:
+```
+    service mysql restart
+```
+
+5. Login to MySQL using your root account:
+```
+    mysql -u root -p
+```
+
+6. Setup a local account. !Replace the myuser and mypass with your own!
+```
+    CREATE USER 'myuser'@'localhost' IDENTIFIED BY 'mypass';
+    CREATE USER 'myuser'@'%' IDENTIFIED BY 'mypass';
+```
+
+7. Grant new user permissons on all databases. !Replace myuser with your own!
+```
+    GRANT ALL ON *.* TO 'myuser'@'localhost';
+    GRANT ALL ON *.* TO 'myuser'@'%';
 ```
